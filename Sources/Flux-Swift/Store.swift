@@ -11,17 +11,17 @@ import Actuator
 public struct BaseStore {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BaseStore")
     public var name: String = "none"
-    public var callbacks = Dictionary<String, ActuatorBase>()
+    public var actuators = Dictionary<String, ActuatorBase>()
     
     public init(name: String) {
         self.name = name
     }
     
-    public mutating func subscribe(callbackName: String, callback: ActuatorBase.Action) {
-        if !callbacks.keys.contains(callbackName) {
-            callbacks[callbackName] = ActuatorBase([callback])
+    public mutating func subscribe(actionName: String, action: ActuatorBase.Action) {
+        if !actuators.keys.contains(actionName) {
+            actuators[actionName] = ActuatorBase([action])
         } else {
-            callbacks[callbackName]?.add(actions: [callback])
+            actuators[actionName]?.add(actions: [action])
         }
     }
     

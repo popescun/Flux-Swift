@@ -12,8 +12,8 @@ final class Flux_SwiftTests: XCTestCase {
         var store = BaseStore(name: storeName)
         XCTAssertEqual(store.name, storeName)
         
-        store.subscribe(callbackName: "actionWithResult", callback: ActuatorBase.Action(action: actionWithResult))
-        var actuator = store.callbacks["actionWithResult"]
+        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
+        var actuator = store.actuators["actionWithResult"]
         XCTAssertNotNil(actuator)
         
         Expectation.value = expectation(description: "test store")
