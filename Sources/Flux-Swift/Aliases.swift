@@ -7,5 +7,5 @@
 
 import Actuator
 
-typealias ActionData = Dictionary<String, Any>
-typealias ActuatorBase = Actuator1<ActionData, ActionData>
+public typealias ActionData = Dictionary<String, Any>
+public typealias ActuatorBase = Actuator1<ActionData, ActionData>

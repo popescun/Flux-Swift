@@ -1,12 +1,12 @@
 {
-  "originHash" : "ce0e0def8b9b34f1727880ee6304cb20453b5757b0802b0b181631e4c938a22d",
+  "originHash" : "497a4eacf37ad4ef24bf1be1e0f35bd8739161894d6d59759c8d1355fdb45571",
   "pins" : [
     {
       "identity" : "actuator-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/popescun/Actuator-Swift.git",
       "state" : {
-        "revision" : "cb383c2e5bfb5827338777927b1a9873defdedda",
+        "revision" : "6b1195b5a32b8b7a85711d94f9782b4a9418e321",
         "version" : "0.0.1"
       }
     },

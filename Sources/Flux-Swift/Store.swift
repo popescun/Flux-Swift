@@ -10,14 +10,14 @@ import Actuator
 
 public struct BaseStore {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BaseStore")
-    var name: String = "none"
-    var callbacks = Dictionary<String, ActuatorBase>()
+    public var name: String = "none"
+    public var callbacks = Dictionary<String, ActuatorBase>()
     
-    init(name: String) {
+    public init(name: String) {
         self.name = name
     }
     
-    mutating func subscribe(callbackName: String, callback: ActuatorBase.Action) {
+    public mutating func subscribe(callbackName: String, callback: ActuatorBase.Action) {
         if !callbacks.keys.contains(callbackName) {
             callbacks[callbackName] = ActuatorBase([callback])
         } else {
@@ -26,7 +26,7 @@ public struct BaseStore {
     }
     
     // override it in subclass
-    func action(action: ActionData) {
+    public func action(action: ActionData) {
         logger.warning("BaseStore.action: override this method!")
     }
 }
