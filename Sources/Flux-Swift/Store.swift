@@ -8,10 +8,14 @@
 import OSLog
 import Actuator
 
-struct BaseStore {
+public struct BaseStore {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BaseStore")
     var name: String = "none"
-    var callbacks: Dictionary<String, ActuatorBase>
+    var callbacks = Dictionary<String, ActuatorBase>()
+    
+    init(name: String) {
+        self.name = name
+    }
     
     mutating func subscribe(callbackName: String, callback: ActuatorBase.Action) {
         if !callbacks.keys.contains(callbackName) {
@@ -21,6 +25,7 @@ struct BaseStore {
         }
     }
     
+    // override it in subclass
     func action(action: ActionData) {
         logger.warning("BaseStore.action: override this method!")
     }
