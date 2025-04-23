@@ -1,24 +1,20 @@
 import XCTest
-import OSLog
-
 import Actuator
 import Flux_Swift
-
-let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Flux_SwiftTests")
 
 final class Flux_SwiftTests: XCTestCase {
     let storeName = "TEST_STORE"
     
     @MainActor func testStoreCreation() throws {
-        var store = BaseStore(name: storeName)
+        let store = BaseStore(name: storeName)
         XCTAssertEqual(store.name, storeName)
     }
     
     @MainActor func testStoreSubscribe() throws {
         var store = BaseStore(name: storeName)
         
-        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: action))
-        var actuator = store.actuators["actionWithResult"]
+        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
+        var actuator = store.actuators["action"]
         XCTAssertNotNil(actuator)
         XCTAssertTrue(actuator!.isConnected)
         XCTAssertEqual(actuator!.Count, 1)
@@ -42,9 +38,9 @@ final class Flux_SwiftTests: XCTestCase {
         var store = BaseStore(name: storeName)
         XCTAssertEqual(store.name, storeName)
         
-        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: action))
-        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: action))
-        var actuator = store.actuators["actionWithResult"]
+        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
+        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
+        var actuator = store.actuators["action"]
         XCTAssertNotNil(actuator)
         XCTAssertTrue(actuator!.isConnected)
         XCTAssertEqual(actuator!.Count, 2)
@@ -63,7 +59,6 @@ final class Flux_SwiftTests: XCTestCase {
     }
     
     func action(actionData: ActionData) -> ActionData {
-        logger.info("actionWithResult...")
         var result = ActionData()
         result["key"] = actionData["key"]
         Expectation.value.fulfill()
@@ -71,7 +66,6 @@ final class Flux_SwiftTests: XCTestCase {
     }
     
     func action2(actionData: ActionData) -> ActionData {
-        logger.info("actionWithResult...")
         var result = ActionData()
         result["key"] = actionData["key"]
         Expectation.value.fulfill()
