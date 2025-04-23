@@ -7,10 +7,15 @@ import Flux_Swift
 let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Flux_SwiftTests")
 
 final class Flux_SwiftTests: XCTestCase {
-    @MainActor func testStore() throws {
-        let storeName = "TEST_STORE"
+    let storeName = "TEST_STORE"
+    
+    @MainActor func testStoreCreation() throws {
         var store = BaseStore(name: storeName)
         XCTAssertEqual(store.name, storeName)
+    }
+    
+    @MainActor func testStoreSubscribe() throws {
+        var store = BaseStore(name: storeName)
         
         store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
         var actuator = store.actuators["actionWithResult"]
@@ -18,6 +23,27 @@ final class Flux_SwiftTests: XCTestCase {
         
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 1
+        
+        let actionData = ActionData()
+        actuator?(actionData)
+        
+        waitForExpectations(timeout: 0)
+    }
+    
+    @MainActor func testStoreMultipleSubscribeSameAction() throws {
+        let storeName = "TEST_STORE"
+        var store = BaseStore(name: storeName)
+        XCTAssertEqual(store.name, storeName)
+        
+        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
+        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
+        var actuator = store.actuators["actionWithResult"]
+        XCTAssertNotNil(actuator)
+        // TODO: add count and isConnected properties to Actuator 
+//        XCTAssertEqual(actuator.ac, 2)
+        
+        Expectation.value = expectation(description: "test store")
+        Expectation.value.expectedFulfillmentCount = 2
         
         let actionData = ActionData()
         actuator?(actionData)
