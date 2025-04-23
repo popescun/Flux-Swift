@@ -20,12 +20,14 @@ final class Flux_SwiftTests: XCTestCase {
         store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
         var actuator = store.actuators["actionWithResult"]
         XCTAssertNotNil(actuator)
+        XCTAssertTrue(actuator!.isConnected)
+        XCTAssertEqual(actuator!.Count, 1)
         
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 1
         
         let actionData = ActionData()
-        actuator?(actionData)
+        actuator!(actionData)
         
         waitForExpectations(timeout: 0)
     }
@@ -39,14 +41,14 @@ final class Flux_SwiftTests: XCTestCase {
         store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
         var actuator = store.actuators["actionWithResult"]
         XCTAssertNotNil(actuator)
-        // TODO: add count and isConnected properties to Actuator 
-//        XCTAssertEqual(actuator.ac, 2)
+        XCTAssertTrue(actuator!.isConnected)
+        XCTAssertEqual(actuator!.Count, 2)
         
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 2
         
         let actionData = ActionData()
-        actuator?(actionData)
+        actuator!(actionData)
         
         waitForExpectations(timeout: 0)
     }
