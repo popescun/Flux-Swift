@@ -17,7 +17,7 @@ final class Flux_SwiftTests: XCTestCase {
     @MainActor func testStoreSubscribe() throws {
         var store = BaseStore(name: storeName)
         
-        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
+        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: action))
         var actuator = store.actuators["actionWithResult"]
         XCTAssertNotNil(actuator)
         XCTAssertTrue(actuator!.isConnected)
@@ -26,10 +26,15 @@ final class Flux_SwiftTests: XCTestCase {
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 1
         
-        let actionData = ActionData()
+        var actionData = ActionData()
+        actionData["key"] = "value"
         actuator!(actionData)
         
         waitForExpectations(timeout: 0)
+        
+        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[0]["key"] as! String)
+        //        print(actionData["key"] as! String)
+        //        print(actuator!.Results[0]["key"] as! String)
     }
     
     @MainActor func testStoreMultipleSubscribeSameAction() throws {
@@ -37,8 +42,8 @@ final class Flux_SwiftTests: XCTestCase {
         var store = BaseStore(name: storeName)
         XCTAssertEqual(store.name, storeName)
         
-        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
-        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: actionWithResult))
+        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: action))
+        store.subscribe(actionName: "actionWithResult", action: ActuatorBase.Action(action: action))
         var actuator = store.actuators["actionWithResult"]
         XCTAssertNotNil(actuator)
         XCTAssertTrue(actuator!.isConnected)
@@ -47,23 +52,30 @@ final class Flux_SwiftTests: XCTestCase {
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 2
         
-        let actionData = ActionData()
+        var actionData = ActionData()
+        actionData["key"] = "value"
         actuator!(actionData)
         
         waitForExpectations(timeout: 0)
+        
+        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[0]["key"] as! String)
+        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[1]["key"] as! String)
     }
     
-    func action(actionData: ActionData) {
-        logger.info("action...")
-        Expectation.value.fulfill()
-    }
-    
-    func actionWithResult(actionData: ActionData) -> ActionData {
+    func action(actionData: ActionData) -> ActionData {
         logger.info("actionWithResult...")
-        var actionData = ActionData()
-        actionData["key1"] = "value1"
+        var result = ActionData()
+        result["key"] = actionData["key"]
         Expectation.value.fulfill()
-        return actionData
+        return result
+    }
+    
+    func action2(actionData: ActionData) -> ActionData {
+        logger.info("actionWithResult...")
+        var result = ActionData()
+        result["key"] = actionData["key"]
+        Expectation.value.fulfill()
+        return result
     }
 }
 
