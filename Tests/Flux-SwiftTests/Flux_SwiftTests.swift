@@ -58,6 +58,46 @@ final class Flux_SwiftTests: XCTestCase {
         XCTAssertEqual(actionData["key"] as! String, actuator!.Results[1]["key"] as! String)
     }
     
+    @MainActor func testStoreMultipleSubscribeDifferentActions() throws {
+        let storeName = "TEST_STORE"
+        var store = BaseStore(name: storeName)
+        XCTAssertEqual(store.name, storeName)
+        
+        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
+        store.subscribe(actionName: "action2", action: ActuatorBase.Action(action: action2))
+        
+        var actuator = store.actuators["action"]
+        XCTAssertNotNil(actuator)
+        XCTAssertTrue(actuator!.isConnected)
+        XCTAssertEqual(actuator!.Count, 1)
+        
+        var actuator2 = store.actuators["action2"]
+        XCTAssertNotNil(actuator2)
+        XCTAssertTrue(actuator2!.isConnected)
+        XCTAssertEqual(actuator2!.Count, 1)
+        
+        Expectation.value = expectation(description: "test first actuator")
+        Expectation.value.expectedFulfillmentCount = 1
+        
+        var actionData = ActionData()
+        actionData["key"] = "value"
+        actuator!(actionData)
+        
+        waitForExpectations(timeout: 0)
+        
+        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[0]["key"] as! String)
+        
+        Expectation.value = expectation(description: "test first actuator")
+        Expectation.value.expectedFulfillmentCount = 1
+        
+        actionData["key"] = "value2"
+        actuator2!(actionData)
+        
+        waitForExpectations(timeout: 0)
+        
+        XCTAssertEqual(actionData["key"] as! String, actuator2!.Results[0]["key"] as! String)
+    }
+    
     func action(actionData: ActionData) -> ActionData {
         var result = ActionData()
         result["key"] = actionData["key"]
