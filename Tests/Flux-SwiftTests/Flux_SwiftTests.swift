@@ -3,15 +3,15 @@ import Actuator
 import Flux_Swift
 
 final class Flux_SwiftTests: XCTestCase {
-    let storeName = "TEST_STORE"
+    let storeId = "TEST_STORE"
     
     @MainActor func testStoreCreation() throws {
-        let store = BaseStore(name: storeName)
-        XCTAssertEqual(store.name, storeName)
+        let store = BaseStore(id: storeId)
+        XCTAssertEqual(store.id, storeId)
     }
     
     @MainActor func testStoreSubscribe() throws {
-        var store = BaseStore(name: storeName)
+        var store = BaseStore(id: storeId)
         
         store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
         var actuator = store.actuators["action"]
@@ -34,9 +34,7 @@ final class Flux_SwiftTests: XCTestCase {
     }
     
     @MainActor func testStoreMultipleSubscribeSameAction() throws {
-        let storeName = "TEST_STORE"
-        var store = BaseStore(name: storeName)
-        XCTAssertEqual(store.name, storeName)
+        var store = BaseStore(id: storeId)
         
         store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
         store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
@@ -59,9 +57,7 @@ final class Flux_SwiftTests: XCTestCase {
     }
     
     @MainActor func testStoreMultipleSubscribeDifferentActions() throws {
-        let storeName = "TEST_STORE"
-        var store = BaseStore(name: storeName)
-        XCTAssertEqual(store.name, storeName)
+        var store = BaseStore(id: storeId)
         
         store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
         store.subscribe(actionName: "action2", action: ActuatorBase.Action(action: action2))

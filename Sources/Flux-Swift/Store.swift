@@ -10,11 +10,11 @@ import Actuator
 
 public struct BaseStore {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BaseStore")
-    public var name: String = "none"
+    public var id: String = "none"
     public var actuators = Dictionary<String, ActuatorBase>()
     
-    public init(name: String) {
-        self.name = name
+    public init(id: String) {
+        self.id = id
     }
     
     public mutating func subscribe(actionName: String, action: ActuatorBase.Action) {
