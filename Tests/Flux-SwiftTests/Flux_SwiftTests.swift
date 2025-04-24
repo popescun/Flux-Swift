@@ -22,13 +22,13 @@ final class Flux_SwiftTests: XCTestCase {
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 1
         
-        var actionData = ActionData()
-        actionData["key"] = "value"
+        var actionData = ActionData(id: "ACTION", payload: [:])
+        actionData.payload["key"] = "value"
         actuator!(actionData)
         
         waitForExpectations(timeout: 0)
         
-        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[0]["key"] as! String)
+        XCTAssertEqual(actionData.payload["key"] as! String, actuator!.Results[0]["key"] as! String)
         //        print(actionData["key"] as! String)
         //        print(actuator!.Results[0]["key"] as! String)
     }
@@ -48,14 +48,14 @@ final class Flux_SwiftTests: XCTestCase {
         Expectation.value = expectation(description: "test store")
         Expectation.value.expectedFulfillmentCount = 2
         
-        var actionData = ActionData()
-        actionData["key"] = "value"
+        var actionData = ActionData(id: "ACTION", payload: [:])
+        actionData.payload["key"] = "value"
         actuator!(actionData)
         
         waitForExpectations(timeout: 0)
         
-        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[0]["key"] as! String)
-        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[1]["key"] as! String)
+        XCTAssertEqual(actionData.payload["key"] as! String, actuator!.Results[0]["key"] as! String)
+        XCTAssertEqual(actionData.payload["key"] as! String, actuator!.Results[1]["key"] as! String)
     }
     
     @MainActor func testStoreMultipleSubscribeDifferentActions() throws {
@@ -79,35 +79,35 @@ final class Flux_SwiftTests: XCTestCase {
         Expectation.value = expectation(description: "test first actuator")
         Expectation.value.expectedFulfillmentCount = 1
         
-        var actionData = ActionData()
-        actionData["key"] = "value"
+        var actionData = ActionData(id: "ACTION", payload: [:])
+        actionData.payload["key"] = "value"
         actuator!(actionData)
         
         waitForExpectations(timeout: 0)
         
-        XCTAssertEqual(actionData["key"] as! String, actuator!.Results[0]["key"] as! String)
+        XCTAssertEqual(actionData.payload["key"] as! String, actuator!.Results[0]["key"] as! String)
         
         Expectation.value = expectation(description: "test first actuator")
         Expectation.value.expectedFulfillmentCount = 1
         
-        actionData["key"] = "value2"
+        actionData.payload["key"] = "value2"
         actuator2!(actionData)
         
         waitForExpectations(timeout: 0)
         
-        XCTAssertEqual(actionData["key"] as! String, actuator2!.Results[0]["key"] as! String)
+        XCTAssertEqual(actionData.payload["key"] as! String, actuator2!.Results[0]["key"] as! String)
     }
     
-    func action(actionData: ActionData) -> ActionData {
-        var result = ActionData()
-        result["key"] = actionData["key"]
+    func action(actionData: ActionData) -> Payload {
+        var result = Payload()
+        result["key"] = actionData.payload["key"]
         Expectation.value.fulfill()
         return result
     }
     
-    func action2(actionData: ActionData) -> ActionData {
-        var result = ActionData()
-        result["key"] = actionData["key"]
+    func action2(actionData: ActionData) -> Payload {
+        var result = Payload()
+        result["key"] = actionData.payload["key"]
         Expectation.value.fulfill()
         return result
     }
