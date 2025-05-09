@@ -8,25 +8,25 @@
 import OSLog
 import Actuator
 
-public struct BaseStore {
+open class BaseStore {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BaseStore")
     public var id: String = "none"
-    public var actuators = Dictionary<String, ActuatorBase>()
+    public var actuators = Dictionary<String, BaseActuator>()
     
     public init(id: String) {
         self.id = id
     }
     
-    public mutating func subscribe(actionName: String, action: ActuatorBase.Action) {
+    public func subscribe(actionName: String, action: BaseActuator.Action) {
         if !actuators.keys.contains(actionName) {
-            actuators[actionName] = ActuatorBase([action])
+            actuators[actionName] = BaseActuator([action])
         } else {
             actuators[actionName]?.add(actions: [action])
         }
     }
     
     // override it in subclass
-    public func action(action: ActionData) {
+    open func action(actionData: ActionData) {
         logger.warning("BaseStore.action: override this method!")
     }
 }

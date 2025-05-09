@@ -6,7 +6,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/popescun/Actuator-Swift.git",
       "state" : {
-        "revision" : "bc66c51f3011eaefb64cddd52f71d1ef6986e170",
+        "revision" : "02ea71ad237cc84cbbd040e3fa5e76c0fee88910",
         "version" : "0.0.1"
       }
     },

@@ -2,51 +2,50 @@ import XCTest
 import Actuator
 import Flux_Swift
 
-final class Flux_SwiftTests: XCTestCase {
+final class BaseStoreTests: XCTestCase {
     let storeId = "TEST_STORE"
     
-    @MainActor func testStoreCreation() throws {
+    @MainActor func testCreation() throws {
         let store = BaseStore(id: storeId)
+        XCTAssertNotNil(store)
         XCTAssertEqual(store.id, storeId)
     }
     
-    @MainActor func testStoreSubscribe() throws {
+    @MainActor func testSubscribe() throws {
         var store = BaseStore(id: storeId)
         
-        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
+        store.subscribe(actionName: "action", action: BaseActuator.Action(action: action))
         var actuator = store.actuators["action"]
         XCTAssertNotNil(actuator)
         XCTAssertTrue(actuator!.isConnected)
         XCTAssertEqual(actuator!.Count, 1)
         
-        Expectation.value = expectation(description: "test store")
+        Expectation.value = expectation(description: "test subscribe")
         Expectation.value.expectedFulfillmentCount = 1
         
-        var actionData = ActionData(id: "ACTION", payload: [:])
+        var actionData = ActionData(id: "ACTION", from: "TEST", to: "TEST_STORE", payload: [:])
         actionData.payload["key"] = "value"
         actuator!(actionData)
         
         waitForExpectations(timeout: 0)
         
         XCTAssertEqual(actionData.payload["key"] as! String, actuator!.Results[0]["key"] as! String)
-        //        print(actionData["key"] as! String)
-        //        print(actuator!.Results[0]["key"] as! String)
     }
     
-    @MainActor func testStoreMultipleSubscribeSameAction() throws {
+    @MainActor func testMultipleSubscribeSameAction() throws {
         var store = BaseStore(id: storeId)
         
-        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
-        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
+        store.subscribe(actionName: "action", action: BaseActuator.Action(action: action))
+        store.subscribe(actionName: "action", action: BaseActuator.Action(action: action))
         var actuator = store.actuators["action"]
         XCTAssertNotNil(actuator)
         XCTAssertTrue(actuator!.isConnected)
         XCTAssertEqual(actuator!.Count, 2)
         
-        Expectation.value = expectation(description: "test store")
+        Expectation.value = expectation(description: "test multiple subscribe same action")
         Expectation.value.expectedFulfillmentCount = 2
         
-        var actionData = ActionData(id: "ACTION", payload: [:])
+        var actionData = ActionData(id: "ACTION", from: "TEST", to: storeId, payload: [:])
         actionData.payload["key"] = "value"
         actuator!(actionData)
         
@@ -56,11 +55,11 @@ final class Flux_SwiftTests: XCTestCase {
         XCTAssertEqual(actionData.payload["key"] as! String, actuator!.Results[1]["key"] as! String)
     }
     
-    @MainActor func testStoreMultipleSubscribeDifferentActions() throws {
+    @MainActor func testMultipleSubscribeDifferentActions() throws {
         var store = BaseStore(id: storeId)
         
-        store.subscribe(actionName: "action", action: ActuatorBase.Action(action: action))
-        store.subscribe(actionName: "action2", action: ActuatorBase.Action(action: action2))
+        store.subscribe(actionName: "action", action: BaseActuator.Action(action: action))
+        store.subscribe(actionName: "action2", action: BaseActuator.Action(action: action2))
         
         var actuator = store.actuators["action"]
         XCTAssertNotNil(actuator)
@@ -72,10 +71,10 @@ final class Flux_SwiftTests: XCTestCase {
         XCTAssertTrue(actuator2!.isConnected)
         XCTAssertEqual(actuator2!.Count, 1)
         
-        Expectation.value = expectation(description: "test first actuator")
+        Expectation.value = expectation(description: "test multiple subscribe different action")
         Expectation.value.expectedFulfillmentCount = 1
         
-        var actionData = ActionData(id: "ACTION", payload: [:])
+        var actionData = ActionData(id: "ACTION", from: "TEST", to: storeId, payload: [:])
         actionData.payload["key"] = "value"
         actuator!(actionData)
         
